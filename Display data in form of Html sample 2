@@ -1,0 +1,168 @@
+<html><head>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<meta><meta></head>
+
+<body onfocusout="parent.setEmailRange();" style="overflow-wrap: break-word;">
+  
+    <p id="variable" style="font-family: undefined;"></p>
+
+    Name: <p id="myText" style="font-family: undefined;"></p>
+
+    <p style="font-family: undefined;">Click the button to change the value of the text field.</p>
+    <button onclick="myFunction()">Show Client Information</button>
+
+    <p id="demo" style="font-family: undefined;"></p>
+
+    <div class="container" style="font-family: undefined;">
+        <h1>display JSON data in HTML </h1>
+
+        <br>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Position</th>
+                    <th>Salary</th>
+                    <th>Start Date</th>
+                    <th>Office</th>
+                    <th>Extension</th>
+                </tr>
+            </thead>
+            <tbody id="tblbody"></tbody>
+        </table>
+    </div>
+
+    <script type="text/javascript">
+
+        var formvalue;
+
+        function setClientApiContext(formContext) {
+            var fullname = formContext.getAttribute("lastname").getValue();
+            var id = formContext.entityReference.id;
+            formvalue = formContext;
+            document.getElementById("variable").innerHTML = "Record GUID Obtained From The Context - " + id;
+            document.getElementById("myText").innerHTML = "fullname - " + fullname;
+
+            alert(fullname);
+
+
+
+        }
+        function myFunction() {
+        
+         debugger;
+        //  var url = "https://prod-27.southeastasia.logic.azure.com:443/workflows/ba78eec7d43f4c68bcb589309eeae422/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Jxdtcd4HLgUwHhsfv_nyn9mTR-IHx_ybOGUA2SGt-oE";
+        //   var req = new XMLHttpRequest();
+        //   req.open("POST", url, true);
+
+        //   var input = JSON.stringify({
+        //       "contactid": formvalue .data.entity.getId().replace("{", "").replace("}", "")});
+       
+
+        //   req.setRequestHeader('Content-Type', 'application/json');
+        //   req.send(JSON.stringify(input));
+        //   Xrm.Utility.alertDialog("Flow initiated. Request is sending...");
+
+        //   req.onreadystatechange = function () {
+        //       if (this.readyState === 4) { 
+        //           req.onreadystatechange = null;
+        //           if (this.status === 200) {
+        //               var result = this.response; 
+        //               alert("" + result); 
+        //           }
+        //           else if(this.status === 400){
+        //               alert(this.statusText);
+        //      var result = this.response; 
+        //               alert("Error" + result);
+        //           }
+        //       }
+        //   };  
+       
+        //   req.send(input);
+
+
+        var flowUrl = "https://prod-27.southeastasia.logic.azure.com:443/workflows/ba78eec7d43f4c68bcb589309eeae422/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Jxdtcd4HLgUwHhsfv_nyn9mTR-IHx_ybOGUA2SGt-oE";
+        var input = JSON.stringify({
+            "Firstname":formvalue.getAttribute("lastname").getValue(),
+            "lastname":formvalue.getAttribute("firstname").getValue(),
+            "email":formvalue.getAttribute("emailaddress1").getValue()
+        });
+        var req = new XMLHttpRequest();
+        req.open("POST", flowUrl, true);
+        req.setRequestHeader('Content-Type', 'application/json');
+    
+    ////Response
+    req.onreadystatechange = function () {
+            if (this.readyState === 4) { 
+                req.onreadystatechange = null;
+                if (this.status === 200) {
+
+                var result = this.response; 
+        BindDataWithJqueyEach(result);
+                    alert("" + result); 
+                }
+                else if(this.status === 400){
+                    alert(this.statusText);
+      var result = this.response; 
+                    alert("Error" + result);
+                }
+            }
+        };  
+    
+    ////End
+        req.send(input);
+
+    }
+
+        //   var name = 
+        //   var accountName = 
+        //   var email = 
+
+        //   var params = {
+        //       "Name": accountName,
+        //       "Email": email,
+        //       "FirstName": name
+        //   }
+
+
+
+        //   var url = "https://prod-28.southeastasia.logic.azure.com:443/workflows/ef677197641b49bfa484b48d4a8111a4/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=ur1-WMhZIiaxA7DBkmUUn6D6kGGVutY0-Sp3jGnBMVM";
+        //   var req = new XMLHttpRequest();
+        //   req.open("POST", url, true);
+        //   req.setRequestHeader('Content-Type', 'application/json');
+        //   req.send(params);
+        //   Xrm.Utility.alertDialog("Flow initiated. Request is sending...");
+
+        //   document.getElementById("demo").innerHTML = "Hello World";
+
+
+//         }
+
+
+
+ function BindDataWithJqueyEach(data)
+    {
+        debugger;
+        if (data != null && data) {
+            for (var i = 0; i < data.length; i++) {
+                var tablerow = "<tr>"
+                              + "<td>" + data[i].id+ "</td>"
+                              + "<td>" + data[i].name + "</td>"
+                              + "<td>" + data[i].position + "</td>"
+                              + "<td>" + data[i].salary + "</td>"
+                              + "<td>" + data[i].start_date+ "</td>"
+                              + "<td>" + data[i].office + "</td>"
+                              + "<td>" + data[i].extn + "</td>"
+                              + "</tr>";
+                $("#tblbody").append(tablerow);
+            }
+        }
+    } 
+
+    </script>
+
+
+</body></html>
